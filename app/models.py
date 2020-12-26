@@ -20,7 +20,7 @@ class Accounts(Base):
     __tablename__ = "accounts"
 
     idConta = Column(Integer, primary_key=True, index=True)
-    idPessoa = Column(ForeignKey("Persons.idPessoa"))
+    idPessoa = Column(Integer, ForeignKey("Persons.idPessoa"))
     saldo = Column(Float)
     limiteSaqueDiario = Column(Float)
     flagAtivo = Column(Boolean, default=True)
@@ -34,7 +34,7 @@ class Transactions(Base):
     __tablename__ = "transactions"
 
     idTransacao = Column(Integer, primary_key=True, index=True)
-    idConta = Column(ForeignKey("Account.idConta"))
+    idConta = Column(Integer, ForeignKey("Account.idConta"))
     valor = Column(Float)
     dataTransacao = Column(Date, default=datetime.date.today())
 
