@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, Date
 from sqlalchemy.orm import relationship
 import datetime
 
-from sql_app.database import Base
+from app.database import Base
 
 
 class Persons(Base):

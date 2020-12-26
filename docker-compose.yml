@@ -14,10 +14,10 @@ services:
     build: .
     restart: always    
     environment:      
-      DB_NAME: postgres
-      DB_USER: postgres
-      DB_PWD: "@NcRfUjX"
-      DB_HOST: db_app
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "@NcRfUjX"
+      POSTGRES_SERVER: db_app
     command: ["sh", "entrypoint.sh"]
     depends_on:
       - db_app
