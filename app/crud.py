@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
-from . import schemas
-import models
+from . import schemas, models
 
 
 # ACCOUNT

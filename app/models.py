@@ -5,6 +5,17 @@ import datetime
 from sql_app.database import Base
 
 
+class Persons(Base):
+    __tablename__ = "persons"
+
+    idPessoa = Column(Integer, primary_key=True, index=True)
+    nome = Column(String)
+    cpf = Column(String, unique=True)
+    dataNascimento = Column(Date)
+
+    account = relationship("Accounts", back_populates="persons")
+
+
 class Accounts(Base):
     __tablename__ = "accounts"
 
@@ -28,12 +39,3 @@ class Transactions(Base):
     dataTransacao = Column(Date, default=datetime.date.today())
 
     account = relationship("Accounts", back_populates="transactions")
-
-
-class Persons(Base):
-    __tablename__ = "persons"
-
-    idPessoa = Column(Integer, primary_key=True, index=True)
-    nome = Column(String)
-    cpf = Column(String, unique=True)
-    dataNascimento = Column(Date)
