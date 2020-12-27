@@ -179,6 +179,9 @@ def get_person_by_cpf(db: Session, cpf: str):
 
 
 def get_person_by_id(db: Session, idPessoa: int):
+    """
+        Função que busca um Person a partir do idPerson.
+    """
     check_person = db.query(models.Persons).filter(models.Persons.idPessoa == idPessoa).first()
     if check_person:
         return check_person
@@ -208,12 +211,3 @@ def create_person(db: Session, person: schemas.PersonCreate):
     db.commit()
     db.refresh(db_person)
     return db_person
-
-
-def get_transactions_by_date_idconta(db: Session, idConta: int, dataini: "str", datafim: "str"):
-    check_account = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
-
-    transactions = check_account.transaction
-    date_start = datetime.datetime.strptime(dataini, "%d-%m-%Y")
-    date_end = datetime.datetime.strptime(datafim, "%d-%m-%Y")
-    transaction_by_date = transactions.filter()
