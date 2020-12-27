@@ -78,7 +78,15 @@ def get_account_transaction_by_date():
 
 # PERSONS
 def get_person_by_cpf(db: Session, cpf: str):
-    check_person = db.query(models.Persons).filter(models.Persons.cpf == cpf)
+    check_person = db.query(models.Persons).filter(models.Persons.cpf == cpf).first()
+    if check_person:
+        return check_person
+    else:
+        return False
+
+
+def get_person_by_id(db: Session, idPessoa: int):
+    check_person = db.query(models.Persons).filter(models.Persons.idPessoa == idPessoa).first()
     if check_person:
         return check_person
     else:

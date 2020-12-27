@@ -29,6 +29,24 @@ def create_user(person: schemas.Persons, db: Session = Depends(get_db)):
         return crud.create_person(db=db, person=person)
 
 
+@app.get("/person/cpf/{cpf}", response_model=schemas.GetAllPersons)
+def get_user_by_cpf(cpf: str, db: Session = Depends(get_db)):
+    db_user = crud.get_person_by_cpf(db, cpf=cpf)
+    if not db_user:
+        raise HTTPException(status_code=404, detail=f"Usuario CPF {cpf} nao cadastrado.")
+    else:
+        return db_user
+
+
+@app.get("/person/id/{idPessoa}", response_model=schemas.GetAllPersons)
+def get_user_by_id(idPessoa: int, db: Session = Depends(get_db)):
+    db_user = crud.get_person_by_id(db, idPessoa=idPessoa)
+    if not db_user:
+        raise HTTPException(status_code=404, detail=f"Usuario ID {idPessoa} nao cadastrado.")
+    else:
+        return db_user
+
+
 @app.get("/allpersons/", response_model=List[schemas.GetAllPersons])
 def get_all_persons(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     persons = crud.get_all_persons(db, skip=skip, limit=limit)
