@@ -10,7 +10,7 @@ Para o funcionamento correto desta aplicação web, necessário algumas configur
 - Docker instalado (https://docs.docker.com/get-docker/)
 - Docker Compose instalado (https://docs.docker.com/compose/install/)
 
-### PREPARAÇÃO E SUBIDA DO AMBIENTE
+### PREPARAÇÃO DO AMBIENTE E EXECUÇÃO DA APLICAÇÃO
 Após a instalação do Docker e docker-compose:
 
 1 - Clone o repositório este repositório (branch Master) no diretório de sua preferência;
@@ -21,7 +21,7 @@ Após a instalação do Docker e docker-compose:
 3 - Após isso, a aplicação deve estar a funcionar!
 
 ### DOCUMENTAÇÃO DOS ENDPOINTS
-Após a aplicação estiver funcionando, podemos começar a consumir os endpoints.
+Após a aplicação estar funcionando, podemos começar a consumir os endpoints.
 
 [Documentação das rotas](http://localhost:8000/docs)
 
@@ -31,6 +31,6 @@ _obs: para ter acesso a Documentação das rodas, também é necessário que a a
 
 - o prefixo para utilização de TODOS os endipoints é http://localhost:8000/
 - todas as operações que forem necessárias informar uma data, deve obrgatóriamente ser uma string e estar no seguinte formato:
->DD-MM-AAA ---> dia 2 dígitos, mês 2 dígitos e ano 4 dígitos
+>"DD-MM-AAA" ---> dia 2 dígitos, mês 2 dígitos e ano 4 dígitos
 
 
