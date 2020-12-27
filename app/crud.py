@@ -127,17 +127,12 @@ def get_account_transaction_by_date():
 
 
 def get_account_transaction_by_date_idconta(db: Session, dataini: datetime.date, datafim: datetime.date, idConta: int):
-    # [TODO] --- AQUI DICO
-    # [TODO] --- AQUI DICO
-    # [TODO] --- AQUI DICO
-    # [TODO] --- AQUI DICO
-    # [TODO] --- AQUI DICO
-    # [TODO] --- AQUI DICO
     """
       Função retorna todas as transações em um determinado range de datas de uma determinada account.
     """
-    check_account = db.query(models.Transactions).filter(models.Transactions.dataTransacao >= dataini,
-                                                         models.Transactions.dataTransacao >= datafim)
+    check_account = db.query(models.Transactions).filter(
+        models.Transactions.idConta >= idConta,
+        models.Transactions.dataTransacao.between(dataini, datafim)).all()
 
     return check_account
 
