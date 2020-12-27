@@ -25,6 +25,33 @@ def create_account(account: schemas.Account, db: Session = Depends(get_db)):
     return crud.create_account(db=db, item=account)
 
 
+@app.get("/account/transactions/{idConta}", response_model=List[schemas.TransactionsConsult])
+def get_all_transactions(idConta: int, db: Session = Depends(get_db)):
+    db_account = crud.get_all_transactions(db=db, idConta=idConta)
+    if not db_account:
+        raise HTTPException(status_code=404, detail=f"idConta {idConta} nao possui transacoes cadastradas.")
+    else:
+        return db_account
+
+
+@app.put("/account/block/{idConta}", response_model=schemas.AccountUpdate)
+def create_account(idConta: int, item: schemas.AccountUpdate, db: Session = Depends(get_db)):
+    try:
+        block = crud.block_account(db=db, item=item, idConta=idConta)
+        return "OK!"
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Erro as tentar bloquear idConta {idConta}. Error: {e}")
+
+
+@app.put("/account/unlock/{idConta}", response_model=schemas.AccountUpdate)
+def create_account(idConta: int, item: schemas.AccountUpdate, db: Session = Depends(get_db)):
+    try:
+        block = crud.unlock_account(db=db, item=item, idConta=idConta)
+        return "OK!"
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Erro as tentar bloquear idConta {idConta}. Error: {e}")
+
+
 @app.post("/account/debit/", response_model=schemas.TransactionsCreate)
 def create_account(item: schemas.TransactionsCreate, db: Session = Depends(get_db)):
     check_account = crud.get_account_by_idconta(db, idConta=item.idConta)
@@ -52,7 +79,7 @@ def get_account_saldo(idConta: int, db: Session = Depends(get_db)):
 
 
 @app.get("/account/idPessoa/{idPessoa}", response_model=List[schemas.AccountConsult])
-def get_account_by_idpessoa(idPessoa: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_account_by_idpessoa(idPessoa: int, db: Session = Depends(get_db)):
     db_account = crud.get_account_by_idpessoa(db, idPessoa=idPessoa)
     if not db_account:
         raise HTTPException(status_code=404, detail=f"Usuario ID {idPessoa} nao possui conta(s) cadastradas.")

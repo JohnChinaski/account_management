@@ -32,11 +32,11 @@ def get_account_by_idpessoa(db: Session, idPessoa: int):
     if accounts:
         return accounts
     else:
-        return
+        return False
 
 
 def get_account_by_idconta(db: Session, idConta: int):
-    accounts = db.query(models.Accounts).filter(models.Accounts.idPessoa == idConta).first()
+    accounts = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
     if accounts:
         return accounts
     else:
@@ -48,6 +48,7 @@ def account_debit(db: Session, item: schemas.TransactionsCreate):
         Função para criação de uma Transaction (DEBITO) e atualizar o salda da Account referente.
     """
     db_transaction = models.Transactions(**item.dict())
+    # db_transaction.descricao = "DEBITO"
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
@@ -66,6 +67,7 @@ def account_credit(db: Session, item: schemas.TransactionsCreate):
         Função para criação de uma Transaction (CREDITO) e atualizar o salda da Account referente.
     """
     db_transaction = models.Transactions(**item.dict())
+    # db_transaction.descricao = "CREDITO"
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
@@ -79,31 +81,44 @@ def account_credit(db: Session, item: schemas.TransactionsCreate):
     return db_transaction
 
 
-def block_account():
+def block_account(db: Session, idConta: int):
     """
         Função para bloqueio uma derterminada Account.
     """
-    pass
+    account = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
+    account.flagAtivo = False
+    db.commit()
+    db.refresh(account)
+
+    return account
+
+
+def unlock_account(db: Session, idConta: int):
+    """
+        Função para bloqueio uma derterminada Account.
+    """
+    account = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
+    account.flagAtivo = True
+    db.commit()
+    db.refresh(account)
+
+    return account
+
+
+def get_all_transactions(db: Session, idConta: int):
+    """
+        Função que retorna todas as Transactions cadastradas para uma específica conta.
+    """
+    check_transactions = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
+    transactions = check_transactions.transaction
+
+    if transactions:
+        return transactions
+    else:
+        return False
 
 
 # ---------- TRANSACTIONS ----------
-def get_account_transaction(db: Session, idConta: int):
-    transactions = db.query(models.Transactions).filter(models.Transactions.idConta == idConta)
-
-    transactions_list = []
-
-    for t in transactions:
-        data = {
-            "idTransacao": t.idTransacao,
-            "idConta": t.idConta,
-            "valor": t.valor,
-            "dataTransacao": t.dataTransacao,
-        }
-
-        transactions_list.append(data)
-    return transactions_list
-
-
 def get_account_transaction_by_date():
     """
       Função retorna todas as transações em um determinado range de datas de uma determinada account.

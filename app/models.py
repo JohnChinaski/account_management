@@ -37,6 +37,7 @@ class Transactions(Base):
     idTransacao = Column(Integer, primary_key=True, index=True)
     idConta = Column(Integer, ForeignKey("accounts.idConta"))
     valor = Column(Float)
+    # descricao = Column(String)
     dataTransacao = Column(Date, default=datetime.date.today())
 
     account = relationship("Accounts", back_populates="transaction")

@@ -11,7 +11,7 @@ class Account(BaseModel):
         orm_mode = True
 
 
-class AccountBasic(BaseModel):
+class AccountBasic(Account):
     limiteSaqueDiario: float
     tipoConta: int
 
@@ -20,6 +20,13 @@ class AccountConsult(AccountBasic):
     idConta: int
     dataCriacao: datetime.date
     flagAtivo: bool
+
+
+class AccountUpdate(BaseModel):
+    pass
+
+    class Config:
+        orm_mode = True
 
 
 # ---------- TRANSACTIONS ----------
@@ -32,6 +39,14 @@ class Transactions(BaseModel):
 
 class TransactionsCreate(Transactions):
     valor: float
+
+
+class TransactionsConsult(Transactions):
+    idConta: int
+    idTransacao: int
+    # descricao: str
+    valor: float
+    dataTransacao: datetime.date
 
 
 # ---------- PERSONS ----------
