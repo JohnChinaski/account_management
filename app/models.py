@@ -21,8 +21,8 @@ class Accounts(Base):
 
     idConta = Column(Integer, primary_key=True, index=True)
     idPessoa = Column(Integer, ForeignKey("persons.idPessoa"))
-    saldo = Column(Float)
-    limiteSaqueDiario = Column(Float)
+    saldo = Column(Float, default=0.0)
+    limiteSaqueDiario = Column(Float, default=0.0)
     flagAtivo = Column(Boolean, default=True)
     tipoConta = Column(Integer)
     dataCriacao = Column(Date, default=datetime.date.today())

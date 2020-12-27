@@ -25,6 +25,32 @@ def create_account(account: schemas.Account, db: Session = Depends(get_db)):
     return crud.create_account(db=db, item=account)
 
 
+@app.post("/account/debit/", response_model=schemas.TransactionsCreate)
+def create_account(item: schemas.TransactionsCreate, db: Session = Depends(get_db)):
+    check_account = crud.get_account_by_idconta(db, idConta=item.idConta)
+    if check_account:
+        transaction = crud.account_debit(db=db, item=item)
+        return transaction
+    else:
+        raise HTTPException(status_code=404, detail=f"Nenhuma conta encontrada para idConta {item.idConta}.")
+
+
+@app.post("/account/credit/", response_model=schemas.TransactionsCreate)
+def create_account(item: schemas.TransactionsCreate, db: Session = Depends(get_db)):
+    check_account = crud.get_account_by_idconta(db, idConta=item.idConta)
+    if check_account:
+        transaction = crud.account_credit(db=db, item=item)
+        return transaction
+    else:
+        raise HTTPException(status_code=404, detail=f"Nenhuma conta encontrada para idConta {item.idConta}.")
+
+
+@app.get("/account/saldo/{idConta}", response_model=schemas.Account)
+def get_account_saldo(idConta: int, db: Session = Depends(get_db)):
+    account_balance = crud.get_account_saldo(db=db, idConta=idConta)
+    return account_balance
+
+
 @app.get("/account/idPessoa/{idPessoa}", response_model=List[schemas.AccountConsult])
 def get_account_by_idpessoa(idPessoa: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     db_account = crud.get_account_by_idpessoa(db, idPessoa=idPessoa)

@@ -4,13 +4,13 @@ import datetime
 
 
 # ---------- ACCOUNT ----------
-def get_account_saldo_by_id(db: Session, idConta: int):
+def get_account_saldo(db: Session, idConta: int):
     """
         Função que retorna o saldo se uma determinada Account.
     """
     account = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
     if account:
-        return account.saldo
+        return {"saldo": account.saldo}
     else:
         return False
 
@@ -32,7 +32,7 @@ def get_account_by_idpessoa(db: Session, idPessoa: int):
     if accounts:
         return accounts
     else:
-        return False
+        return
 
 
 def get_account_by_idconta(db: Session, idConta: int):
@@ -43,18 +43,40 @@ def get_account_by_idconta(db: Session, idConta: int):
         return False
 
 
-def update_saldo_add_value():
+def account_debit(db: Session, item: schemas.TransactionsCreate):
     """
-        Função para adição de saldo em uma derterminada Account.
+        Função para criação de uma Transaction (DEBITO) e atualizar o salda da Account referente.
     """
-    pass
+    db_transaction = models.Transactions(**item.dict())
+    db.add(db_transaction)
+    db.commit()
+    db.refresh(db_transaction)
+
+    # update
+    old_balance = db_transaction.account.saldo
+    db_transaction.account.saldo = old_balance - item.valor
+    db.commit()
+    db.refresh(db_transaction)
+
+    return db_transaction
 
 
-def update_saldo_remove_value():
+def account_credit(db: Session, item: schemas.TransactionsCreate):
     """
-        Função para remoção de saldo em uma derterminada Account.
+        Função para criação de uma Transaction (CREDITO) e atualizar o salda da Account referente.
     """
-    pass
+    db_transaction = models.Transactions(**item.dict())
+    db.add(db_transaction)
+    db.commit()
+    db.refresh(db_transaction)
+
+    # update
+    old_balance = db_transaction.account.saldo
+    db_transaction.account.saldo = old_balance + item.valor
+    db.commit()
+    db.refresh(db_transaction)
+
+    return db_transaction
 
 
 def block_account():

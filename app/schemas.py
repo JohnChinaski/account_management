@@ -6,31 +6,32 @@ import datetime
 # ---------- ACCOUNTS ----------
 class Account(BaseModel):
     saldo: float
-    limiteSaqueDiario: float
-    tipoConta: int
 
     class Config:
         orm_mode = True
 
 
-class AccountConsult(Account):
+class AccountBasic(BaseModel):
+    limiteSaqueDiario: float
+    tipoConta: int
+
+
+class AccountConsult(AccountBasic):
     idConta: int
     dataCriacao: datetime.date
+    flagAtivo: bool
 
 
 # ---------- TRANSACTIONS ----------
 class Transactions(BaseModel):
-    idTransacao: int
     idConta: int
-    valor: float
-    dataTransacao: datetime.date
 
     class Config:
         orm_mode = True
 
 
 class TransactionsCreate(Transactions):
-    pass
+    valor: float
 
 
 # ---------- PERSONS ----------
