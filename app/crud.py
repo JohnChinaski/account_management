@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from . import schemas, models
+import datetime
 
 
 # ACCOUNT
@@ -65,30 +66,43 @@ def get_account_transaction(db: Session, idConta: int):
         }
 
         transactions_list.append(data)
-    return data
+    return transactions_list
 
 
 def get_account_transaction_by_date():
     """
       Função retorna todas as transações em um determinado range de datas de uma determinada account.
-  """
+    """
     pass
 
-# def get_user_by_email(db: Session, email: str):
-#     return db.query(models.User).filter(models.User.email == email).first()
-#
-#
-# def get_users(db: Session, skip: int = 0, limit: int = 100):
-#     return db.query(models.User).offset(skip).limit(limit).all()
-#
-#
-# def get_items(db: Session, skip: int = 0, limit: int = 100):
-#     return db.query(models.Item).offset(skip).limit(limit).all()
-#
-#
-# def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-#     db_item = models.Item(**item.dict(), owner_id=user_id)
-#     db.add(db_item)
-#     db.commit()
-#     db.refresh(db_item)
-#     return db_item
+
+# PERSONS
+def get_person_by_cpf(db: Session, cpf: str):
+    check_person = db.query(models.Persons).filter(models.Persons.cpf == cpf)
+    if check_person:
+        return check_person
+    else:
+        return False
+
+
+def get_all_persons(db: Session, skip: int = 0, limit: int = 100):
+    """
+        Função que retorna todas as Persons cadastradas
+    """
+    persons = db.query(models.Persons).offset(skip).limit(limit).all()
+    return persons
+
+
+def create_person(db: Session, person: schemas.Persons):
+    """
+        Função para criação de um Person.
+    """
+    db_person = models.Persons(
+        nome=person.nome,
+        cpf=person.cpf,
+        dataNascimento=person.dataNascimento,
+    )
+    db.add(db_person)
+    db.commit()
+    db.refresh(db_person)
+    return db_person

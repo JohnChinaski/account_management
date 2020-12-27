@@ -30,19 +30,22 @@ class Transactions(BaseModel):
         orm_mode = True
 
 
-class TransacCreate(Transactions):
+class TransactionsCreate(Transactions):
     pass
 
 
 class Persons(BaseModel):
-    idPessoa: int
     nome: str
     cpf: str
-    dataNascimento: datetime.date
 
     class Config:
         orm_mode = True
 
 
-class PersonsCreate(Persons):
-    pass
+class PersonCreate(Persons):
+    dataNascimento: str
+
+
+class GetAllPersons(Persons):
+    idPessoa: int
+    dataNascimento: datetime.date
