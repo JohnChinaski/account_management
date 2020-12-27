@@ -4,33 +4,33 @@ Aplicação web desenvolvida para criação e gerenciamento de contas, propriet�
 
 ### REQUISITOS
 
-Para o funcionamento correto desta aplicação web, necessário algumas configurações da máquina:
+Para o funcionamento correto desta aplicação web, é necessário algumas configurações da máquina:
 
-- Sistema operacional Linux (não obrigatório mas recomendado)
+- Sistema operacional Linux (não obrigatório, mas recomendado)
 - Docker instalado (https://docs.docker.com/get-docker/)
 - Docker Compose instalado (https://docs.docker.com/compose/install/)
 
 ### PREPARAÇÃO DO AMBIENTE E EXECUÇÃO DA APLICAÇÃO
 Após a instalação do Docker e docker-compose:
 
-1 - Clone o repositório este repositório (branch Master) no diretório de sua preferência;
+1 - Clone este repositório (branch master) no diretório de sua preferência;
 
 2 - Na pasta raiz do repositório que clonou, execute o seguinte comando:
 >docker-compose up --build
 
-3 - Após isso, a aplicação deve estar a funcionar!
+3 - Após isso, a aplicação deve estar em execução!
 
 ### DOCUMENTAÇÃO DOS ENDPOINTS
-Após a aplicação estar funcionando, podemos começar a consumir os endpoints.
+Após o funcionamento da aplicação, podemos começar a consumir os endpoints.
 
 [Documentação das rotas](http://localhost:8000/docs)
 
-_obs: para ter acesso a Documentação das rodas, também é necessário que a aplicação esteja funcionando._ 
+_Obs: para ter acesso à Documentação das rodas, também é necessário que a aplicação esteja em execução._ 
 
 ####_ALGUNS PONTOS IMPORTANTES PARA UTILIZAÇÃO_
 
-- o prefixo para utilização de TODOS os endipoints é http://localhost:8000/
-- todas as operações que forem necessárias informar uma data, deve obrgatóriamente ser uma string e estar no seguinte formato:
->"DD-MM-AAA" ---> dia 2 dígitos, mês 2 dígitos e ano 4 dígitos
+- o prefixo para utilização de TODOS os endpoints é http://localhost:8000/
+- todas as operações que sejam necessárias informar uma data deve, obrigatóriamente, ser uma string e estar no seguinte formato:
+>"DD-MM-AAAA" ---> dia (2 dígitos), mês (2 dígitos) e ano (4 dígitos).
 
 
