@@ -3,46 +3,69 @@ from pydantic import BaseModel
 import datetime
 
 
-class Accoun(BaseModel):
-    idConta: int
-    idPessoa: int
+# ---------- ACCOUNTS ----------
+class Account(BaseModel):
     saldo: float
-    limiteSaqueDiario: float
-    flagAtivo: bool
-    tipoConta: int
-    dataCriacao: datetime.date
 
     class Config:
         orm_mode = True
 
 
-class AccounCreate(Accoun):
+class AccountBasic(Account):
+    limiteSaqueDiario: float
+    tipoConta: int
+
+
+class AccountCreate(AccountBasic):
+    idPessoa: int
+
+
+class AccountConsult(AccountBasic):
+    idConta: int
+    idPessoa: int
+    dataCriacao: datetime.date
+    flagAtivo: bool
+
+
+class AccountUpdate(BaseModel):
     pass
 
+    class Config:
+        orm_mode = True
 
+
+# ---------- TRANSACTIONS ----------
 class Transactions(BaseModel):
-    idTransacao: int
     idConta: int
+
+    class Config:
+        orm_mode = True
+
+
+class TransactionsCreate(Transactions):
+    valor: float
+
+
+class TransactionsConsult(Transactions):
+    idTransacao: int
+    descricao: str
     valor: float
     dataTransacao: datetime.date
 
-    class Config:
-        orm_mode = True
 
-
-class TransacCreate(Transactions):
-    pass
-
-
+# ---------- PERSONS ----------
 class Persons(BaseModel):
-    idPessoa: int
     nome: str
     cpf: str
-    dataNascimento: datetime.date
 
     class Config:
         orm_mode = True
 
 
-class PersonsCreate(Persons):
-    pass
+class PersonCreate(Persons):
+    dataNascimento: str
+
+
+class GetAllPersons(Persons):
+    idPessoa: int
+    dataNascimento: datetime.date
