@@ -19,9 +19,33 @@ def get_db():
         db.close()
 
 
+# ---------- ACCOUNTS ----------
+@app.post("/account/", response_model=schemas.Account)
+def create_account(account: schemas.Account, db: Session = Depends(get_db)):
+    return crud.create_account(db=db, item=account)
+
+
+@app.get("/account/idPessoa/{idPessoa}", response_model=List[schemas.AccountConsult])
+def get_account_by_idpessoa(idPessoa: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    db_account = crud.get_account_by_idpessoa(db, idPessoa=idPessoa)
+    if not db_account:
+        raise HTTPException(status_code=404, detail=f"Usuario ID {idPessoa} nao possui conta(s) cadastradas.")
+    else:
+        return db_account
+
+
+@app.get("/account/idConta/{idConta}", response_model=schemas.AccountConsult)
+def get_account_by_idconta(idConta: int, db: Session = Depends(get_db)):
+    db_account = crud.get_account_by_idconta(db, idConta=idConta)
+    if not db_account:
+        raise HTTPException(status_code=404, detail=f"Nao encontrado nenhuma conta para Person ID {idConta}.")
+    else:
+        return db_account
+
+
 # ---------- PERSONS ----------
 @app.post("/person/", response_model=schemas.PersonCreate)
-def create_user(person: schemas.Persons, db: Session = Depends(get_db)):
+def create_user(person: schemas.PersonCreate, db: Session = Depends(get_db)):
     check_person = crud.get_person_by_cpf(db=db, cpf=person.cpf)
     if check_person:
         raise HTTPException(status_code=400, detail="Documento ja cadastrado.")

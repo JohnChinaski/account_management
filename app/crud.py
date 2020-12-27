@@ -15,20 +15,32 @@ def get_account_saldo_by_id(db: Session, idConta: int):
         return False
 
 
-def create_account(db: Session, user: schemas.AccounCreate, content):
+def create_account(db: Session, item: schemas.Account):
     """
         Função para criação de uma Account.
     """
-    db_account = models.Accounts(idPessoa=content.get("idPessoa"),
-                                 saldo=content.get("saldo"),
-                                 limiteSaqueDiario=content.get("limiteSaqueDiario"),
-                                 flagAtivo=content.get("flagAtivo"),
-                                 tipoConta=content.get("tipoConta"),
-                                 )
+    db_account = models.Accounts(**item.dict())
     db.add(db_account)
     db.commit()
     db.refresh(db_account)
     return db_account
+
+
+def get_account_by_idpessoa(db: Session, idPessoa: int):
+    check_account = db.query(models.Persons).filter(models.Persons.idPessoa == idPessoa).first()
+    accounts = check_account.account
+    if accounts:
+        return accounts
+    else:
+        return False
+
+
+def get_account_by_idconta(db: Session, idConta: int):
+    accounts = db.query(models.Accounts).filter(models.Accounts.idPessoa == idConta).first()
+    if accounts:
+        return accounts
+    else:
+        return False
 
 
 def update_saldo_add_value():
@@ -102,7 +114,7 @@ def get_all_persons(db: Session, skip: int = 0, limit: int = 100):
     return persons
 
 
-def create_person(db: Session, person: schemas.Persons):
+def create_person(db: Session, person: schemas.PersonCreate):
     """
         Função para criação de um Person.
     """

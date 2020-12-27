@@ -4,21 +4,18 @@ import datetime
 
 
 # ---------- ACCOUNTS ----------
-class Accoun(BaseModel):
-    idConta: int
-    idPessoa: int
+class Account(BaseModel):
     saldo: float
     limiteSaqueDiario: float
-    flagAtivo: bool
     tipoConta: int
-    dataCriacao: datetime.date
 
     class Config:
         orm_mode = True
 
 
-class AccounCreate(Accoun):
-    pass
+class AccountConsult(Account):
+    idConta: int
+    dataCriacao: datetime.date
 
 
 # ---------- TRANSACTIONS ----------
