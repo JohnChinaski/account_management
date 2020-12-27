@@ -15,7 +15,7 @@ def get_account_saldo(db: Session, idConta: int):
         return False
 
 
-def create_account(db: Session, item: schemas.Account):
+def create_account(db: Session, item: schemas.AccountCreate):
     """
         Função para criação de uma Account.
     """
@@ -27,6 +27,9 @@ def create_account(db: Session, item: schemas.Account):
 
 
 def get_account_by_idpessoa(db: Session, idPessoa: int):
+    """
+        Função retorna uma Account específica para uma determinada Person.
+    """
     check_account = db.query(models.Persons).filter(models.Persons.idPessoa == idPessoa).first()
     accounts = check_account.account
     if accounts:
@@ -36,6 +39,9 @@ def get_account_by_idpessoa(db: Session, idPessoa: int):
 
 
 def get_account_by_idconta(db: Session, idConta: int):
+    """
+        Função retorna uma Account buscando pelo ID.
+    """
     accounts = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
     if accounts:
         return accounts
@@ -48,7 +54,7 @@ def account_debit(db: Session, item: schemas.TransactionsCreate):
         Função para criação de uma Transaction (DEBITO) e atualizar o salda da Account referente.
     """
     db_transaction = models.Transactions(**item.dict())
-    # db_transaction.descricao = "DEBITO"
+    db_transaction.descricao = "DEBITO"
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
@@ -67,7 +73,7 @@ def account_credit(db: Session, item: schemas.TransactionsCreate):
         Função para criação de uma Transaction (CREDITO) e atualizar o salda da Account referente.
     """
     db_transaction = models.Transactions(**item.dict())
-    # db_transaction.descricao = "CREDITO"
+    db_transaction.descricao = "CREDITO"
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
@@ -83,7 +89,7 @@ def account_credit(db: Session, item: schemas.TransactionsCreate):
 
 def block_account(db: Session, idConta: int):
     """
-        Função para bloqueio uma derterminada Account.
+        Função para bloqueio uma determinada Account.
     """
     account = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
     account.flagAtivo = False
@@ -95,7 +101,7 @@ def block_account(db: Session, idConta: int):
 
 def unlock_account(db: Session, idConta: int):
     """
-        Função para bloqueio uma derterminada Account.
+        Função para bloqueio uma determinada Account.
     """
     account = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
     account.flagAtivo = True
@@ -105,7 +111,19 @@ def unlock_account(db: Session, idConta: int):
     return account
 
 
-def get_all_transactions(db: Session, idConta: int):
+def get_all_transactions(db: Session, skip: int = 0, limit: int = 100):
+    """
+        Função que retorna todas as Transactions cadastradas.
+    """
+    transactions = db.query(models.Transactions).offset(skip).limit(limit).all()
+
+    if transactions:
+        return transactions
+    else:
+        return False
+
+
+def get_all_transactions_by_idconta(db: Session, idConta: int):
     """
         Função que retorna todas as Transactions cadastradas para uma específica conta.
     """
@@ -118,12 +136,23 @@ def get_all_transactions(db: Session, idConta: int):
         return False
 
 
+def get_all_accounts(db: Session, skip: int = 0, limit: int = 100):
+    """
+        Função que retorna todas as Accounts cadastradas
+    """
+    accounts = db.query(models.Accounts).offset(skip).limit(limit).all()
+    return accounts
+
+
 # ---------- TRANSACTIONS ----------
-def get_account_transaction_by_date():
+def get_account_transaction_by_date(db: Session, dataini: datetime.date, datafim: datetime.date):
     """
-      Função retorna todas as transações em um determinado range de datas de uma determinada account.
+      Função retorna todas as transações em um determinado range de datas.
     """
-    pass
+    check_account = db.query(models.Transactions).filter(
+        models.Transactions.dataTransacao.between(dataini, datafim)).all()
+
+    return check_account
 
 
 def get_account_transaction_by_date_idconta(db: Session, dataini: datetime.date, datafim: datetime.date, idConta: int):
@@ -131,7 +160,7 @@ def get_account_transaction_by_date_idconta(db: Session, dataini: datetime.date,
       Função retorna todas as transações em um determinado range de datas de uma determinada account.
     """
     check_account = db.query(models.Transactions).filter(
-        models.Transactions.idConta >= idConta,
+        models.Transactions.idConta == idConta,
         models.Transactions.dataTransacao.between(dataini, datafim)).all()
 
     return check_account
@@ -139,6 +168,9 @@ def get_account_transaction_by_date_idconta(db: Session, dataini: datetime.date,
 
 # ---------- PERSONS ----------
 def get_person_by_cpf(db: Session, cpf: str):
+    """
+        Função que busca um Person a partir do CPF.
+    """
     check_person = db.query(models.Persons).filter(models.Persons.cpf == cpf).first()
     if check_person:
         return check_person
@@ -166,10 +198,11 @@ def create_person(db: Session, person: schemas.PersonCreate):
     """
         Função para criação de um Person.
     """
+    birth_date = datetime.datetime.strptime(person.dataNascimento, "%d-%m-%Y")
     db_person = models.Persons(
         nome=person.nome,
         cpf=person.cpf,
-        dataNascimento=person.dataNascimento,
+        dataNascimento=birth_date,
     )
     db.add(db_person)
     db.commit()

@@ -20,14 +20,18 @@ def get_db():
 
 
 # ---------- ACCOUNTS ----------
-@app.post("/account/", response_model=schemas.Account)
-def create_account(account: schemas.Account, db: Session = Depends(get_db)):
-    return crud.create_account(db=db, item=account)
+@app.post("/account/", response_model=schemas.AccountConsult)
+def create_account(item: schemas.AccountCreate, db: Session = Depends(get_db)):
+    check_person = crud.get_person_by_id(db=db, idPessoa=item.idPessoa)
+    if check_person:
+        return crud.create_account(db=db, item=item)
+    else:
+        raise HTTPException(status_code=404, detail=f"Usuario ID {item.idPessoa} nao cadastrado.")
 
 
 @app.get("/account/transactions/{idConta}", response_model=List[schemas.TransactionsConsult])
-def get_all_transactions(idConta: int, db: Session = Depends(get_db)):
-    db_account = crud.get_all_transactions(db=db, idConta=idConta)
+def get_all_transactions_by_idconta(idConta: int, db: Session = Depends(get_db)):
+    db_account = crud.get_all_transactions_by_idconta(db=db, idConta=idConta)
     if not db_account:
         raise HTTPException(status_code=404, detail=f"idConta {idConta} nao possui transacoes cadastradas.")
     else:
@@ -35,25 +39,25 @@ def get_all_transactions(idConta: int, db: Session = Depends(get_db)):
 
 
 @app.put("/account/block/{idConta}", response_model=schemas.AccountUpdate)
-def create_account(idConta: int, item: schemas.AccountUpdate, db: Session = Depends(get_db)):
+def block_account(idConta: int, db: Session = Depends(get_db)):
     try:
-        block = crud.block_account(db=db, item=item, idConta=idConta)
+        block = crud.block_account(db=db, idConta=idConta)
         return "OK!"
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erro as tentar bloquear idConta {idConta}. Error: {e}")
 
 
 @app.put("/account/unlock/{idConta}", response_model=schemas.AccountUpdate)
-def create_account(idConta: int, item: schemas.AccountUpdate, db: Session = Depends(get_db)):
+def unlock_account(idConta: int, db: Session = Depends(get_db)):
     try:
-        block = crud.unlock_account(db=db, item=item, idConta=idConta)
+        block = crud.unlock_account(db=db, idConta=idConta)
         return "OK!"
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"Erro as tentar bloquear idConta {idConta}. Error: {e}")
 
 
-@app.post("/account/debit/", response_model=schemas.TransactionsCreate)
-def create_account(item: schemas.TransactionsCreate, db: Session = Depends(get_db)):
+@app.post("/account/debit/", response_model=schemas.TransactionsConsult)
+def account_debit(item: schemas.TransactionsCreate, db: Session = Depends(get_db)):
     check_account = crud.get_account_by_idconta(db, idConta=item.idConta)
     if check_account:
         transaction = crud.account_debit(db=db, item=item)
@@ -62,8 +66,8 @@ def create_account(item: schemas.TransactionsCreate, db: Session = Depends(get_d
         raise HTTPException(status_code=404, detail=f"Nenhuma conta encontrada para idConta {item.idConta}.")
 
 
-@app.post("/account/credit/", response_model=schemas.TransactionsCreate)
-def create_account(item: schemas.TransactionsCreate, db: Session = Depends(get_db)):
+@app.post("/account/credit/", response_model=schemas.TransactionsConsult)
+def account_credit(item: schemas.TransactionsCreate, db: Session = Depends(get_db)):
     check_account = crud.get_account_by_idconta(db, idConta=item.idConta)
     if check_account:
         transaction = crud.account_credit(db=db, item=item)
@@ -80,11 +84,15 @@ def get_account_saldo(idConta: int, db: Session = Depends(get_db)):
 
 @app.get("/account/idPessoa/{idPessoa}", response_model=List[schemas.AccountConsult])
 def get_account_by_idpessoa(idPessoa: int, db: Session = Depends(get_db)):
-    db_account = crud.get_account_by_idpessoa(db, idPessoa=idPessoa)
-    if not db_account:
-        raise HTTPException(status_code=404, detail=f"Usuario ID {idPessoa} nao possui conta(s) cadastradas.")
+    check_person = crud.get_person_by_id(db=db, idPessoa=idPessoa)
+    if not check_person:
+        raise HTTPException(status_code=404, detail=f"Usuario ID {idPessoa} nao cadastrado.")
     else:
-        return db_account
+        db_account = crud.get_account_by_idpessoa(db, idPessoa=idPessoa)
+        if not db_account:
+            raise HTTPException(status_code=404, detail=f"Usuario ID {idPessoa} nao possui conta(s) cadastradas.")
+        else:
+            return db_account
 
 
 @app.get("/account/idConta/{idConta}", response_model=schemas.AccountConsult)
@@ -96,9 +104,18 @@ def get_account_by_idconta(idConta: int, db: Session = Depends(get_db)):
         return db_account
 
 
+@app.get("/allaccounts/", response_model=List[schemas.AccountConsult])
+def get_all_accounts(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    accounts = crud.get_all_accounts(db=db, skip=skip, limit=limit)
+    if accounts:
+        return accounts
+    else:
+        raise HTTPException(status_code=400, detail="Nenhuma Person cadastrada.")
+
+
 # ---------- PERSONS ----------
-@app.post("/person/", response_model=schemas.PersonCreate)
-def create_user(person: schemas.PersonCreate, db: Session = Depends(get_db)):
+@app.post("/person/", response_model=schemas.GetAllPersons)
+def create_person(person: schemas.PersonCreate, db: Session = Depends(get_db)):
     check_person = crud.get_person_by_cpf(db=db, cpf=person.cpf)
     if check_person:
         raise HTTPException(status_code=400, detail="Documento ja cadastrado.")
@@ -107,7 +124,7 @@ def create_user(person: schemas.PersonCreate, db: Session = Depends(get_db)):
 
 
 @app.get("/person/cpf/{cpf}", response_model=schemas.GetAllPersons)
-def get_user_by_cpf(cpf: str, db: Session = Depends(get_db)):
+def get_person_by_cpf(cpf: str, db: Session = Depends(get_db)):
     db_user = crud.get_person_by_cpf(db, cpf=cpf)
     if not db_user:
         raise HTTPException(status_code=404, detail=f"Usuario CPF {cpf} nao cadastrado.")
@@ -116,7 +133,7 @@ def get_user_by_cpf(cpf: str, db: Session = Depends(get_db)):
 
 
 @app.get("/person/id/{idPessoa}", response_model=schemas.GetAllPersons)
-def get_user_by_id(idPessoa: int, db: Session = Depends(get_db)):
+def get_person_by_id(idPessoa: int, db: Session = Depends(get_db)):
     db_user = crud.get_person_by_id(db, idPessoa=idPessoa)
     if not db_user:
         raise HTTPException(status_code=404, detail=f"Usuario ID {idPessoa} nao cadastrado.")
@@ -134,8 +151,9 @@ def get_all_persons(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
 
 
 # ---------- TRANSACTIONS ----------
-@app.get("/transactions/dataIni/{dataini}/dataFim/{datafim}/idConta/{idConta}/", response_model=List[schemas.TransactionsConsult])
-def get_all_persons(idConta: int, dataini: str, datafim: str, db: Session = Depends(get_db)):
+@app.get("/transactions/dataIni/{dataini}/dataFim/{datafim}/idConta/{idConta}/",
+         response_model=List[schemas.TransactionsConsult])
+def get_all_transctions_by_date_and_idconta(idConta: int, dataini: str, datafim: str, db: Session = Depends(get_db)):
     start_date = datetime.datetime.strptime(dataini, "%d-%m-%Y")
     end_date = datetime.datetime.strptime(datafim, "%d-%m-%Y")
     transactions = crud.get_account_transaction_by_date_idconta(db=db,
@@ -147,3 +165,26 @@ def get_all_persons(idConta: int, dataini: str, datafim: str, db: Session = Depe
     else:
         raise HTTPException(status_code=400,
                             detail=f"Nenhuma transaction para idConta {idConta} entre as datas {dataini} e {datafim}")
+
+
+@app.get("/transactions/dataIni/{dataini}/dataFim/{datafim}/", response_model=List[schemas.TransactionsConsult])
+def get_all_transctions_by_date(dataini: str, datafim: str, db: Session = Depends(get_db)):
+    start_date = datetime.datetime.strptime(dataini, "%d-%m-%Y")
+    end_date = datetime.datetime.strptime(datafim, "%d-%m-%Y")
+    transactions = crud.get_account_transaction_by_date(db=db,
+                                                        dataini=start_date,
+                                                        datafim=end_date)
+    if transactions:
+        return transactions
+    else:
+        raise HTTPException(status_code=400,
+                            detail=f"Nenhuma transaction entre as datas {dataini} e {datafim}")
+
+
+@app.get("/alltransactions/", response_model=List[schemas.TransactionsConsult])
+def get_all_transactions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    db_transactions = crud.get_all_transactions(db=db, skip=skip, limit=limit)
+    if not db_transactions:
+        raise HTTPException(status_code=404, detail=f"Nenhuma transação cadastrada cadastradas.")
+    else:
+        return db_transactions

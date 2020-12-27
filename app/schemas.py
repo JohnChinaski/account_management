@@ -16,8 +16,13 @@ class AccountBasic(Account):
     tipoConta: int
 
 
+class AccountCreate(AccountBasic):
+    idPessoa: int
+
+
 class AccountConsult(AccountBasic):
     idConta: int
+    idPessoa: int
     dataCriacao: datetime.date
     flagAtivo: bool
 
@@ -42,9 +47,8 @@ class TransactionsCreate(Transactions):
 
 
 class TransactionsConsult(Transactions):
-    idConta: int
     idTransacao: int
-    # descricao: str
+    descricao: str
     valor: float
     dataTransacao: datetime.date
 
