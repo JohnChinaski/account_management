@@ -1,6 +1,6 @@
 #### TESTE TÉCNICO PARA VAGA DE DESENVOLVEDOR PYTHON
 
-Aplicação web desenvolvida para criação e gerenciamento de contas, proprietários e transações.
+Aplicação web desenvolvida para criação e gerenciamento de contas, proprietários e transações através de endpoints API Rest utilizando o framework FastAPI.
 
 ### REQUISITOS
 
