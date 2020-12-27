@@ -131,3 +131,13 @@ def get_all_persons(skip: int = 0, limit: int = 100, db: Session = Depends(get_d
         return persons
     else:
         raise HTTPException(status_code=400, detail="Nenhuma Person cadastrada.")
+
+
+# ---------- TRANSACTIONS ----------
+@app.get("/transactions/dataIni/{dataini}/dataFim/{datafim}/idConta/{idConta}/", response_model=List[schemas.TransactionsConsult])
+def get_all_persons(idConta: int, dataini: str, datafim: str, db: Session = Depends(get_db)):
+    persons = crud.get_account_transaction_by_date_idconta(db=db, dataini=dataini, datafim=datafim, idConta=idConta)
+    if persons:
+        return persons
+    else:
+        raise HTTPException(status_code=400, detail="Nenhuma Person cadastrada.")

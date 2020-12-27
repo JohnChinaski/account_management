@@ -126,6 +126,22 @@ def get_account_transaction_by_date():
     pass
 
 
+def get_account_transaction_by_date_idconta(db: Session, dataini: datetime.date, datafim: datetime.date, idConta: int):
+    # [TODO] --- AQUI DICO
+    # [TODO] --- AQUI DICO
+    # [TODO] --- AQUI DICO
+    # [TODO] --- AQUI DICO
+    # [TODO] --- AQUI DICO
+    # [TODO] --- AQUI DICO
+    """
+      Função retorna todas as transações em um determinado range de datas de uma determinada account.
+    """
+    check_account = db.query(models.Transactions).filter(models.Transactions.dataTransacao >= dataini,
+                                                         models.Transactions.dataTransacao >= datafim)
+
+    return check_account
+
+
 # ---------- PERSONS ----------
 def get_person_by_cpf(db: Session, cpf: str):
     check_person = db.query(models.Persons).filter(models.Persons.cpf == cpf).first()
@@ -164,3 +180,12 @@ def create_person(db: Session, person: schemas.PersonCreate):
     db.commit()
     db.refresh(db_person)
     return db_person
+
+
+def get_transactions_by_date_idconta(db: Session, idConta: int, dataini: "str", datafim: "str"):
+    check_account = db.query(models.Accounts).filter(models.Accounts.idConta == idConta).first()
+
+    transactions = check_account.transaction
+    date_start = datetime.datetime.strptime(dataini, "%d-%m-%Y")
+    date_end = datetime.datetime.strptime(datafim, "%d-%m-%Y")
+    transaction_by_date = transactions.filter()
