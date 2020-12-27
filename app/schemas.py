@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import datetime
 
 
+# ---------- ACCOUNTS ----------
 class Accoun(BaseModel):
     idConta: int
     idPessoa: int
@@ -20,6 +21,7 @@ class AccounCreate(Accoun):
     pass
 
 
+# ---------- TRANSACTIONS ----------
 class Transactions(BaseModel):
     idTransacao: int
     idConta: int
@@ -34,6 +36,7 @@ class TransactionsCreate(Transactions):
     pass
 
 
+# ---------- PERSONS ----------
 class Persons(BaseModel):
     nome: str
     cpf: str

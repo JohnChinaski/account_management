@@ -3,7 +3,7 @@ from . import schemas, models
 import datetime
 
 
-# ACCOUNT
+# ---------- ACCOUNT ----------
 def get_account_saldo_by_id(db: Session, idConta: int):
     """
         Função que retorna o saldo se uma determinada Account.
@@ -52,6 +52,7 @@ def block_account():
     pass
 
 
+# ---------- TRANSACTIONS ----------
 def get_account_transaction(db: Session, idConta: int):
     transactions = db.query(models.Transactions).filter(models.Transactions.idConta == idConta)
 
@@ -76,7 +77,7 @@ def get_account_transaction_by_date():
     pass
 
 
-# PERSONS
+# ---------- PERSONS ----------
 def get_person_by_cpf(db: Session, cpf: str):
     check_person = db.query(models.Persons).filter(models.Persons.cpf == cpf).first()
     if check_person:
