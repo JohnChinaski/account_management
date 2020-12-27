@@ -20,6 +20,8 @@ Após a instalação do Docker e docker-compose:
 
 3 - Após isso, a aplicação deve estar em execução!
 
+- Para encerrar a aplicação, basta abrir o terminal onde a aplicação esta em execução e pressionar as teclas CTRL + C.
+
 ### DOCUMENTAÇÃO DOS ENDPOINTS
 Após o funcionamento da aplicação, podemos começar a consumir os endpoints.
 
