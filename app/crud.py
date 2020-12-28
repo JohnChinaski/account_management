@@ -161,7 +161,8 @@ def get_account_transaction_by_date_idconta(db: Session, dataini: datetime.date,
     """
     check_account = db.query(models.Transactions).filter(
         models.Transactions.idConta == idConta,
-        models.Transactions.dataTransacao.between(dataini, datafim)).all()
+        models.Transactions.dataTransacao.between(dataini, datafim)
+    ).all()
 
     return check_account
 

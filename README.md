@@ -32,7 +32,8 @@ _Obs: para ter acesso à Documentação das rodas, também é necessário que a 
 ####_ALGUNS PONTOS IMPORTANTES PARA UTILIZAÇÃO_
 
 - o prefixo para utilização de TODOS os endpoints é http://localhost:8000/
+- para criar uma Conta (Account) é obrigatório ter uma Pessoa (Person) cadastrada e para ter uma Transação de débito e/ou crédito (Transaction) é necessário ter uma Conta (Account) cadastrada
 - todas as operações que sejam necessárias informar uma data deve, obrigatóriamente, ser uma string e estar no seguinte formato:
->"DD-MM-AAAA" ---> dia (2 dígitos), mês (2 dígitos) e ano (4 dígitos).
+> “DD-MM-AAAA” ---> dia (2 dígitos), mês (2 dígitos) e ano (4 dígitos).
 
 
