@@ -168,6 +168,17 @@ def get_all_transctions_by_date_and_idconta(idConta: int, dataini: str, datafim:
                             detail=f"Nenhuma transaction para idConta {idConta} entre as datas {dataini} e {datafim}")
 
 
+@app.get("/transactions/idConta/{idConta}/",
+         response_model=List[schemas.TransactionsConsult],
+         tags=["Transaction"])
+def get_all_transctions_by_idconta(idConta: int, db: Session = Depends(get_db)):
+    transactions = crud.get_account_transaction_by_idconta(db=db, idConta=idConta)
+    if transactions:
+        return transactions
+    else:
+        raise HTTPException(status_code=400, detail=f"Nenhuma transaction para idConta {idConta}")
+
+
 @app.get("/transactions/dataIni/{dataini}/dataFim/{datafim}/",
          response_model=List[schemas.TransactionsConsult],
          tags=["Transaction"])

@@ -167,6 +167,17 @@ def get_account_transaction_by_date_idconta(db: Session, dataini: datetime.date,
     return check_account
 
 
+def get_account_transaction_by_idconta(db: Session, idConta: int):
+    """
+      Função retorna todas as transações em um determinado range de datas de uma determinada account.
+    """
+    check_account = db.query(models.Transactions).filter(
+        models.Transactions.idConta == idConta
+    ).all()
+
+    return check_account
+
+
 # ---------- PERSONS ----------
 def get_person_by_cpf(db: Session, cpf: str):
     """
