@@ -29,7 +29,7 @@ Após o funcionamento da aplicação, podemos começar a consumir os endpoints.
 
 _Obs: para ter acesso à Documentação das rodas, também é necessário que a aplicação esteja em execução._ 
 
-####_ALGUNS PONTOS IMPORTANTES PARA UTILIZAÇÃO_
+####ALGUNS PONTOS IMPORTANTES PARA UTILIZAÇÃO
 
 - o prefixo para utilização de TODOS os endpoints é http://localhost:8000/
 - para criar uma Conta (Account) é obrigatório ter uma Pessoa (Person) cadastrada e para ter uma Transação de débito e/ou crédito (Transaction) é necessário ter uma Conta (Account) cadastrada
