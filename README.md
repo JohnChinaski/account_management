@@ -1,4 +1,4 @@
-#### TESTE TÉCNICO PARA VAGA DE DESENVOLVEDOR PYTHON
+#### FastAPI simple application
 
 Aplicação web desenvolvida para criação e gerenciamento de contas, proprietários e transações através de endpoints API Rest utilizando o framework FastAPI.
 
